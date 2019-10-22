@@ -15,9 +15,8 @@
 	  @author Copyrights 2019 by ㈜ 섬세한사람들. All right reserved.
  	-->
 
-
-
 	<entry key="sync.package">com.seomse</entry>
-
+	<entry key="sync.service.flag">Y</entry>
+	<entry key="sync.service.wait.time">3600000</entry>
    	
 </properties>

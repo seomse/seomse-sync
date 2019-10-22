@@ -37,6 +37,8 @@ public class SynchronizerManager {
         private static final SynchronizerManager instance = new SynchronizerManager();
     }
 
+
+
     /**
      * 인스턴스 얻기
      * @return Singleton instance
@@ -53,6 +55,9 @@ public class SynchronizerManager {
         this.exceptionHandler = exceptionHandler;
     }
 
+    private boolean isIng = false;
+
+    private long lastSyncTime = System.currentTimeMillis();
     /**
      * 생성자
      */
@@ -101,7 +106,9 @@ public class SynchronizerManager {
     /**
      * 초기에 처음 실행될 이벤트 정의
      */
-    public void sync(){
+    public synchronized void sync(){
+        isIng = true;
+        lastSyncTime = System.currentTimeMillis();
         RunningTime runningTime = new RunningTime();
 
         //순서정보를 명확하게 하기위해 i 사용 ( 순서가 꼭 지켜져야 함을 명시)
@@ -118,6 +125,20 @@ public class SynchronizerManager {
                 ExceptionUtil.exception(e,logger,exceptionHandler);
             }
         }
+        isIng = false;
     }
 
+    /**
+     * @return 동기화중인지 여부
+     */
+    public boolean isIng() {
+        return isIng;
+    }
+
+    /**
+     * @return 마지막 동기화 시간
+     */
+    public long getLastSyncTime() {
+        return lastSyncTime;
+    }
 }
