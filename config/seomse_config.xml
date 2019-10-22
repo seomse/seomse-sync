@@ -17,7 +17,7 @@
 
 
 
-	<entry key="temp.config">temp</entry>
+	<entry key="sync.package">com.seomse</entry>
 
    	
 </properties>
