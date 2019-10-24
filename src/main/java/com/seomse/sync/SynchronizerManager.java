@@ -90,21 +90,11 @@ public class SynchronizerManager {
 
     }
 
-
-    private Comparator<Synchronizer> syncSort = new Comparator<Synchronizer>() {
-        @Override
-        public int compare(Synchronizer i1, Synchronizer i2 ) {
-            int seq1 = PriorityUtil.getSeq(i1.getClass());
-            int seq2 = PriorityUtil.getSeq(i2.getClass());
-            return Integer.compare(seq1, seq2);
-        }
-    };
-
     private void changeArray(){
 
         Synchronizer[] SyncArray = syncSet.toArray( new Synchronizer[0]);
 
-        Arrays.sort(SyncArray, syncSort);
+        Arrays.sort(SyncArray, PriorityUtil.PRIORITY_SORT);
 
         this.syncArray = SyncArray;
     }
