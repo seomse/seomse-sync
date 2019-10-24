@@ -10,10 +10,7 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * <pre>
@@ -21,7 +18,7 @@ import java.util.List;
  *  설    명 : 동기화 관리자
  *
  *  작 성 자 : macle
- *  작 성 일 : 2019.10.23
+ *  작 성 일 : 2019.10.25
  *  버    전 : 1.0
  *  수정이력 :
  *  기타사항 :
@@ -37,8 +34,6 @@ public class SynchronizerManager {
         private static final SynchronizerManager instance = new SynchronizerManager();
     }
 
-
-
     /**
      * 인스턴스 얻기
      * @return Singleton instance
@@ -47,7 +42,10 @@ public class SynchronizerManager {
         return Singleton.instance;
     }
 
-    private Synchronizer[] syncArray;
+
+    private Set<Synchronizer> syncSet = new HashSet<>();
+
+    private Synchronizer[] syncArray ;
 
     private ExceptionHandler exceptionHandler = null;
 
@@ -58,6 +56,7 @@ public class SynchronizerManager {
     private boolean isIng = false;
 
     private long lastSyncTime = System.currentTimeMillis();
+
     /**
      * 생성자
      */
@@ -68,64 +67,115 @@ public class SynchronizerManager {
             String syncPackage = Config.getConfig("sync.package", "com.seomse");
 
             Reflections ref = new Reflections (syncPackage);
-            List<Synchronizer> syncList = new ArrayList<>();
             for (Class<?> cl : ref.getSubTypesOf(Synchronizer.class)) {
                 try{
-                    //noinspection deprecation
-                    Synchronizer sync = (Synchronizer)cl.newInstance();
-                    syncList.add(sync);
+
+                    if(cl.isAnnotationPresent(Synchronization.class)) {
+                        //noinspection deprecation
+                        Synchronizer sync = (Synchronizer) cl.newInstance();
+                        syncSet.add(sync);
+                    }
 
                 }catch(Exception e){logger.error(ExceptionUtil.getStackTrace(e));}
             }
 
-            if(syncList.size() == 0){
+            if(syncSet.size() == 0){
                 this.syncArray = new Synchronizer[0];
                 return;
             }
-            Comparator<Synchronizer> syncSort = new Comparator<Synchronizer>() {
-                @Override
-                public int compare(Synchronizer i1, Synchronizer i2 ) {
-                    int seq1 = PriorityUtil.getSeq(i1.getClass());
-                    int seq2 = PriorityUtil.getSeq(i2.getClass());
-                    return Integer.compare(seq1, seq2);
-                }
-            };
-
-            Synchronizer[] SyncArray = syncList.toArray( new Synchronizer[0]);
-
-            Arrays.sort(SyncArray, syncSort);
-
-            this.syncArray = SyncArray;
-
+            changeArray();
         }catch(Exception e){
             logger.error(ExceptionUtil.getStackTrace(e));
         }
 
     }
 
+
+    private Comparator<Synchronizer> syncSort = new Comparator<Synchronizer>() {
+        @Override
+        public int compare(Synchronizer i1, Synchronizer i2 ) {
+            int seq1 = PriorityUtil.getSeq(i1.getClass());
+            int seq2 = PriorityUtil.getSeq(i2.getClass());
+            return Integer.compare(seq1, seq2);
+        }
+    };
+
+    private void changeArray(){
+
+        Synchronizer[] SyncArray = syncSet.toArray( new Synchronizer[0]);
+
+        Arrays.sort(SyncArray, syncSort);
+
+        this.syncArray = SyncArray;
+    }
+
+    private final Object lock = new Object();
+
+    /**
+     * 동기화  객체 추가
+     * @param synchronizer 동기화 객체
+     */
+    public void add(Synchronizer synchronizer){
+        synchronized (lock){
+            if(syncSet.contains(synchronizer)){
+                return;
+            }
+            syncSet.add(synchronizer);
+            changeArray();
+        }
+    }
+
+
+
+    /**
+     * 동기화 객체 제거
+     * @param synchronizer 동기화 객체
+     */
+    public void remove(Synchronizer synchronizer){
+        synchronized (lock){
+            if(!syncSet.contains(synchronizer)){
+                return;
+            }
+            syncSet.remove(synchronizer);
+
+            if(syncSet.size() == 0){
+                this.syncArray = new Synchronizer[0];
+            }else{
+                changeArray();
+            }
+        }
+    }
+
+
+    private final Object syncLock = new Object();
+
     /**
      * 초기에 처음 실행될 이벤트 정의
      */
-    public synchronized void sync(){
-        isIng = true;
-        lastSyncTime = System.currentTimeMillis();
-        RunningTime runningTime = new RunningTime();
+    public void sync(){
+        synchronized (syncLock) {
+            isIng = true;
+            lastSyncTime = System.currentTimeMillis();
+            RunningTime runningTime = new RunningTime();
 
-        //순서정보를 명확하게 하기위해 i 사용 ( 순서가 꼭 지켜져야 함을 명시)
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < syncArray.length ; i++) {
-            try {
-                Synchronizer sync = syncArray[i];
-                logger.debug("sync : " + sync.getClass().getName());
-                sync.sync();
+            Synchronizer[] syncArray = this.syncArray;
 
-                logger.debug(TimeUtil.getTimeValue(runningTime.getRunningTime()));
+            //순서정보를 명확하게 하기위해 i 사용 ( 순서가 꼭 지켜져야 함을 명시)
+            //noinspection ForLoopReplaceableByForEach
+            for (int i = 0; i < syncArray.length; i++) {
+                try {
+                    Synchronizer sync = syncArray[i];
+                    logger.debug("sync : " + sync.getClass().getName());
+                    sync.sync();
 
-            }catch(Exception e){
-                ExceptionUtil.exception(e,logger,exceptionHandler);
+                    logger.debug(TimeUtil.getTimeValue(runningTime.getRunningTime()));
+
+                } catch (Exception e) {
+                    ExceptionUtil.exception(e, logger, exceptionHandler);
+                }
             }
+            isIng = false;
         }
-        isIng = false;
     }
 
     /**
