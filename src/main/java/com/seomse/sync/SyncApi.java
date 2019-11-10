@@ -25,9 +25,7 @@ public class SyncApi extends ApiMessage {
     public void receive(String message) {
         try{
             SynchronizerManager synchronizerManager = SynchronizerManager.getInstance();
-            if(!synchronizerManager.isIng()){
-                synchronizerManager.sync();
-            }
+            synchronizerManager.sync();
             communication.sendMessage(Messages.SUCCESS);
         }catch(Exception e){
             communication.sendMessage(Messages.FAIL + ExceptionUtil.getStackTrace(e));
