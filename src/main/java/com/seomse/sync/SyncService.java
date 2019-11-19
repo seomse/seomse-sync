@@ -27,8 +27,6 @@ public class SyncService extends Service {
 
     private boolean isStop = false;
 
-    //지연된시작
-    private boolean isDelayedStart = false;
 
     /**
      * 생성자
@@ -36,6 +34,7 @@ public class SyncService extends Service {
     public SyncService()
     {
         setSleepTime(Config.getLong("sync.service.sleep.time", 3600000L));
+        setDelayStartTime(Config.getLong("sync.service.sleep.time", 3600000L));
         setState(State.START);
     }
 
