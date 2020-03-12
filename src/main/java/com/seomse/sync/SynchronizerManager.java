@@ -64,30 +64,32 @@ public class SynchronizerManager {
 
         try{
 
-            String syncPackage = Config.getConfig("sync.package", "com.seomse");
+            String syncPackagesValue = Config.getConfig("sync.package", "com.seomse");
+            String [] syncPackages = syncPackagesValue.split(",");
+            for(String syncPackage : syncPackages) {
+                Reflections ref = new Reflections(syncPackage);
+                for (Class<?> cl : ref.getSubTypesOf(Synchronizer.class)) {
+                    try {
 
-            Reflections ref = new Reflections (syncPackage);
-            for (Class<?> cl : ref.getSubTypesOf(Synchronizer.class)) {
-                try{
+                        if (cl.isAnnotationPresent(Synchronization.class)) {
+                            Synchronizer sync = (Synchronizer) cl.newInstance();
+                            syncSet.add(sync);
+                        }
 
-                    if(cl.isAnnotationPresent(Synchronization.class)) {
-                        //noinspection deprecation
-                        Synchronizer sync = (Synchronizer) cl.newInstance();
-                        syncSet.add(sync);
+                    } catch (Exception e) {
+                        logger.error(ExceptionUtil.getStackTrace(e));
                     }
+                }
 
-                }catch(Exception e){logger.error(ExceptionUtil.getStackTrace(e));}
-            }
-
-            if(syncSet.size() == 0){
-                this.syncArray = new Synchronizer[0];
-                return;
+                if (syncSet.size() == 0) {
+                    this.syncArray = new Synchronizer[0];
+                    return;
+                }
             }
             changeArray();
         }catch(Exception e){
             logger.error(ExceptionUtil.getStackTrace(e));
         }
-
     }
 
     private void changeArray(){
