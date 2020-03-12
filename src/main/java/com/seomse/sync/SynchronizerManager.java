@@ -80,12 +80,13 @@ public class SynchronizerManager {
                         logger.error(ExceptionUtil.getStackTrace(e));
                     }
                 }
-
-                if (syncSet.size() == 0) {
-                    this.syncArray = new Synchronizer[0];
-                    return;
-                }
             }
+
+            if (syncSet.size() == 0) {
+                this.syncArray = new Synchronizer[0];
+                return;
+            }
+
             changeArray();
         }catch(Exception e){
             logger.error(ExceptionUtil.getStackTrace(e));
