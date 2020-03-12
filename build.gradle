@@ -18,7 +18,7 @@ dependencies {
     implementation 'ch.qos.logback:logback-access:1.1.3'
 
     //reflections
-    implementation 'org.reflections:reflections:0.9.12'
+    implementation 'org.reflections:reflections:0.9.11'
 
     implementation fileTree (dir: 'dependencies', include: ['/**/*.jar'])
 }
