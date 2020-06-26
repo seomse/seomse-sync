@@ -7,6 +7,10 @@ import com.seomse.commons.utils.PriorityUtil;
 import com.seomse.commons.utils.date.RunningTime;
 import com.seomse.commons.utils.date.TimeUtil;
 import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +71,10 @@ public class SynchronizerManager {
             String syncPackagesValue = Config.getConfig("sync.package", "com.seomse");
             String [] syncPackages = syncPackagesValue.split(",");
             for(String syncPackage : syncPackages) {
-                Reflections ref = new Reflections(syncPackage);
+                Reflections ref = new Reflections(new ConfigurationBuilder()
+                        .setScanners(new SubTypesScanner())
+                        .setUrls(ClasspathHelper.forClassLoader())
+                        .filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix(syncPackage))));
                 for (Class<?> cl : ref.getSubTypesOf(Synchronizer.class)) {
                     try {
 
