@@ -47,7 +47,7 @@ public class SynchronizerManager {
     }
 
 
-    private Set<Synchronizer> syncSet = new HashSet<>();
+    private final Set<Synchronizer> syncSet = new HashSet<>();
 
     private Synchronizer[] syncArray ;
 
