@@ -25,9 +25,6 @@ public class SyncService extends Service {
 
     private static final Logger logger = LoggerFactory.getLogger(SyncService.class);
 
-    private boolean isStop = false;
-
-
     /**
      * 생성자
      */
