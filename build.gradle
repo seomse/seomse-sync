@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.seomse.sync'
-version '1.0-SNAPSHOT'
+version '1.0.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -13,9 +13,9 @@ dependencies {
 
 
     //log
-    implementation 'ch.qos.logback:logback-core:1.1.3'
-    implementation 'ch.qos.logback:logback-classic:1.1.3'
-    implementation 'ch.qos.logback:logback-access:1.1.3'
+    implementation 'ch.qos.logback:logback-core:1.2.3'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'ch.qos.logback:logback-access:1.2.3'
 
     //reflections
     implementation 'org.reflections:reflections:0.9.10'

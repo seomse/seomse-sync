@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2020 Seomse Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.seomse.sync;
 
 import com.seomse.commons.config.Config;
@@ -20,17 +36,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * <pre>
- *  파 일 명 : SynchronizerManager.java
- *  설    명 : 동기화 관리자
- *
- *  작 성 자 : macle
- *  작 성 일 : 2019.10.25
- *  버    전 : 1.0
- *  수정이력 :
- *  기타사항 :
- * </pre>
- * @author Copyrights 2019 by ㈜섬세한사람들. All right reserved.
+ * 동기화 관리자
+ * @author macle
  */
 public class SynchronizerManager {
 
@@ -43,7 +50,7 @@ public class SynchronizerManager {
 
     /**
      * 인스턴스 얻기
-     * @return Singleton instance
+     * @return SynchronizerManager Singleton instance
      */
     public static SynchronizerManager getInstance(){
         return Singleton.instance;
@@ -56,6 +63,11 @@ public class SynchronizerManager {
 
     private ExceptionHandler exceptionHandler = null;
 
+    /**
+     * ExceptionHandler 세팅
+     * 예외를 핸들링 할 경우
+     * @param exceptionHandler ExceptionHandler
+     */
     public void setExceptionHandler(ExceptionHandler exceptionHandler) {
         this.exceptionHandler = exceptionHandler;
     }
@@ -106,6 +118,9 @@ public class SynchronizerManager {
         }
     }
 
+    /**
+     * 메모리 정보 변경
+     */
     private void changeArray(){
 
         Synchronizer[] SyncArray = syncSet.toArray( new Synchronizer[0]);
@@ -119,7 +134,7 @@ public class SynchronizerManager {
 
     /**
      * 동기화  객체 추가
-     * @param synchronizer 동기화 객체
+     * @param synchronizer Synchronizer
      */
     public void add(Synchronizer synchronizer){
         synchronized (lock){
@@ -135,7 +150,7 @@ public class SynchronizerManager {
 
     /**
      * 동기화 객체 제거
-     * @param synchronizer 동기화 객체
+     * @param synchronizer Synchronizer
      */
     public void remove(Synchronizer synchronizer){
         synchronized (lock){
@@ -185,14 +200,14 @@ public class SynchronizerManager {
     }
 
     /**
-     * @return 동기화중인지 여부
+     * @return boolean 진행중 여부
      */
     public boolean isIng() {
         return isIng;
     }
 
     /**
-     * @return 마지막 동기화 시간
+     * @return long unix time 마지막 동기화 시간
      */
     public long getLastSyncTime() {
         return lastSyncTime;
