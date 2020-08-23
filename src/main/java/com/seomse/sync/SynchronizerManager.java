@@ -86,7 +86,7 @@ public class SynchronizerManager {
             String syncPackagesValue = Config.getConfig("sync.package", "com.seomse");
             String [] syncPackages = syncPackagesValue.split(",");
             for(String syncPackage : syncPackages) {
-                // 0.90
+                // 0.9.10
                 Reflections ref = new Reflections(new ConfigurationBuilder()
                         .setScanners(new SubTypesScanner(false), new ResourcesScanner())
                         .setUrls(ClasspathHelper.forPackage(syncPackage))
