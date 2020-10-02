@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.seomse.sync'
-version '1.0.0-SNAPSHOT'
+version '1.0.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -21,7 +21,7 @@ dependencies {
     implementation 'org.reflections:reflections:0.9.10'
 
     //seomse
-    implementation 'com.seomse.commons:seomse-commons:1.0.0'
-    implementation 'com.seomse.api:seomse-api:1.0.0'
+    implementation 'com.seomse.commons:seomse-commons:1.1.8'
+    implementation 'com.seomse.api:seomse-api:1.0.1'
 
 }

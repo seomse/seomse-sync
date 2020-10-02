@@ -13,10 +13,10 @@
  seomse-commons 를 활용한 자동 동기화 서비스, seomse-api 를 활용한 api를 제공 합니다.
  
 # gradle
-implementation 'com.seomse.sync:seomse-sync:1.0.0'
+implementation 'com.seomse.sync:seomse-sync:1.0.1'
 
 # etc
-https://mvnrepository.com/artifact/com.seomse.sync/seomse-sync/1.0.0
+https://mvnrepository.com/artifact/com.seomse.sync/seomse-sync/1.0.1
 
 # communication
 blog, homepage
