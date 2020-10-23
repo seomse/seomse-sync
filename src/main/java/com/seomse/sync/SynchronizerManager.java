@@ -83,7 +83,11 @@ public class SynchronizerManager {
 
         try{
 
-            String syncPackagesValue = Config.getConfig("sync.package", "com.seomse");
+            String syncPackagesValue = Config.getConfig("sync.package");
+            if(syncPackagesValue == null){
+                syncPackagesValue = Config.getConfig("default.package", "com.seomse");
+            }
+
             String [] syncPackages = syncPackagesValue.split(",");
             for(String syncPackage : syncPackages) {
                 // 0.9.10
