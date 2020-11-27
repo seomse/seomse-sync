@@ -6,7 +6,7 @@
 
     <groupId>com.seomse.sync</groupId>
     <artifactId>seomse-sync</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
 
     <name>seomse-sync</name>
@@ -145,13 +145,13 @@
         <dependency>
             <groupId>com.seomse.commons</groupId>
             <artifactId>seomse-commons</artifactId>
-            <version>1.1.9</version>
+            <version>1.2.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.seomse.api</groupId>
             <artifactId>seomse-api</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.6</version>
         </dependency>
 
 
